@@ -1,7 +1,26 @@
 import React, { Component } from 'react';
 import Estoria from './Estoria';
+import EstoriaForm from './EstoriaForm';
 
 class Taskboard extends Component {
+    constructor() {
+        super();
+        this.state = {
+            estorias: [{
+                    id: 1, 
+                    titulo: 'Contratar Seguro', 
+                    descricao: 'Como usuário...', 
+                    pontos: 10
+                },
+                {
+                    id: 2, 
+                    titulo: 'Cancelar Seguro',
+                    descricao: 'Como usuário...', 
+                    pontos: 30},
+            ]
+        }
+    }
+
     render() {
         const estorias = this._getEstorias();
         const titulo = this._getTitulo(estorias.length); 
@@ -15,17 +34,26 @@ class Taskboard extends Component {
                         {estorias}
                     </div>
                 </div>
+                <EstoriaForm adicionarEstoria={this._adicionarEstoria.bind(this)}/>
             </div>
         );
     }
 
-    _getEstorias() {
-        const estorias = [
-            {id: 1, titulo: 'Contratar Seguro', descricao: 'Como usuário...', pontos: 10},
-            {id: 2, titulo: 'Cancelar Seguro', descricao: 'Como usuário...', pontos: 30},
-        ];
+    _adicionarEstoria(titulo, pontos, descricao) {
+        const estoria = {
+            titulo,
+            descricao,
+            pontos,
+            id: this.state.estorias.length + 1
+        };
 
-        return estorias.map( estoria => 
+        this.setState({
+            estorias: this.state.estorias.concat([estoria])
+        });
+    }
+
+    _getEstorias() {
+        return this.state.estorias.map( estoria => 
             <Estoria
                 titulo={estoria.titulo} descricao={estoria.descricao}
                 pontos={estoria.pontos} key={estoria.id} />);

@@ -1,23 +1,17 @@
 import React, { Component } from 'react';
 import Estoria from './Estoria';
 import EstoriaForm from './EstoriaForm';
+import jQuery from 'jquery';
 
 class Taskboard extends Component {
+    componentWillMount() {
+        this._buscarEstorias();
+    }
+
     constructor() {
         super();
         this.state = {
-            estorias: [{
-                    id: 1, 
-                    titulo: 'Contratar Seguro', 
-                    descricao: 'Como usuário...', 
-                    pontos: 10
-                },
-                {
-                    id: 2, 
-                    titulo: 'Cancelar Seguro',
-                    descricao: 'Como usuário...', 
-                    pontos: 30},
-            ]
+            estorias: []
         }
     }
 
@@ -37,6 +31,16 @@ class Taskboard extends Component {
                 <EstoriaForm adicionarEstoria={this._adicionarEstoria.bind(this)}/>
             </div>
         );
+    }
+
+    _buscarEstorias() {
+        jQuery.ajax({
+            method: 'GET',
+            url: 'http://localhost:3004/estorias',
+            success: (estorias) => {
+                this.setState({estorias})
+            }
+        });
     }
 
     _adicionarEstoria(titulo, pontos, descricao) {

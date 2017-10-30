@@ -4,6 +4,15 @@ import EstoriaForm from './EstoriaForm';
 import jQuery from 'jquery';
 
 class Taskboard extends Component {
+
+    componentDidMount() {
+        this._timer = setInterval(() => this._buscarEstorias(), 5000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this._timer);
+    }
+
     componentWillMount() {
         this._buscarEstorias();
     }
@@ -44,23 +53,36 @@ class Taskboard extends Component {
     }
 
     _adicionarEstoria(titulo, pontos, descricao) {
-        const estoria = {
-            titulo,
-            descricao,
-            pontos,
-            id: this.state.estorias.length + 1
-        };
 
-        this.setState({
-            estorias: this.state.estorias.concat([estoria])
+        const estoria = { titulo, descricao, pontos };
+
+        jQuery.post('http://localhost:3004/estorias', estoria)
+            .success(novaEstoria => {
+                this.setState({estorias:this.state.estorias.concat([novaEstoria]) }
+            );
         });
+    }
+
+    _excluirEstoria(estoriaId) {
+        jQuery.ajax({
+            method: 'DELETE',
+            url: `http://localhost:3004/estorias/${estoriaId}`
+        });
+
+        const estorias = [...this.state.estorias];
+        estorias.splice(estoriaId, 1);
+
+        this.setState({estorias});
     }
 
     _getEstorias() {
         return this.state.estorias.map( estoria => 
             <Estoria
                 titulo={estoria.titulo} descricao={estoria.descricao}
-                pontos={estoria.pontos} key={estoria.id} />);
+                pontos={estoria.pontos} key={estoria.id} 
+                id={estoria.id}
+                onDelete={this._excluirEstoria.bind(this)}
+                />);
     }
 
     _getTitulo(totalDeEstorias) {

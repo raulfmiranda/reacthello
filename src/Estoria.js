@@ -16,6 +16,11 @@ class Estoria extends Component {
         });
     }
 
+    _handleDelete(event) {
+        event.preventDefault();
+        this.props.onDelete(this.props.id);
+    }
+
     render() {
         let descricao;
         let textoBotao = 'Exibir Estória';
@@ -35,6 +40,7 @@ class Estoria extends Component {
                         </div>
                         <div className="card-action">
                             <a className="right" href="#" onClick={this._handleClick.bind(this)}>{textoBotao}</a>
+                            <a className="right" href="#" onClick={this._handleDelete.bind(this)}>Excluir</a>
                             <br/>
                         </div>
                     </div>
